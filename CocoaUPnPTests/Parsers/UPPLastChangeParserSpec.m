@@ -15,12 +15,24 @@ NSData *(^StubEventWithTransportState)(NSString *) = ^NSData * (NSString *transp
     return [string dataUsingEncoding:NSUTF8StringEncoding];
 };
 
+NSData *(^StubEventWithVolume)(NSString *) = ^NSData * (NSString *volume) {
+
+    NSString *string = [NSString stringWithFormat:
+                        @"<Event xmlns=\"urn:schemas-upnp-org:metadata-1-0/RCS/\">"
+                        @"<InstanceID val=\"0\">"
+                        @"<Volume val=\"%@\"/>"
+                        @"</InstanceID>"
+                        @"</Event>", volume];
+
+    return [string dataUsingEncoding:NSUTF8StringEncoding];
+};
+
 SpecBegin(UPPLastChangeParser)
 
 describe(@"UPPLastChangeParser", ^{
 
     it(@"should parse last change xml", ^{
-        NSData *data = LoadDataFromXML(@"LastChangeFull", [self class]);
+        NSData *data = LoadDataFromXML(@"LastChangeAVTFull", [self class]);
         expect(data).toNot.beNil();
 
         waitUntil(^(DoneCallback done) {
@@ -48,6 +60,39 @@ describe(@"UPPLastChangeParser", ^{
                 UPPMediaItem *transportMetadata = event[@"AVTransportURIMetaData"];
                 expect(transportMetadata).toNot.beNil();
                 expect(transportMetadata.itemTitle).to.equal(@"Still Echoes");
+                done();
+            }];
+        });
+    });
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
+    it(@"should return an error when no data set", ^{
+        waitUntil(^(DoneCallback done) {
+            [UPPLastChangeParser parseData:nil completion:^(NSDictionary *event, NSError *error) {
+                expect(error).toNot.beNil();
+                expect(error.code).to.equal(UPPErrorCodeEmptyData);
+                expect(event).to.beNil();
+                done();
+            }];
+        });
+    });
+#pragma clang diagnostic pop
+});
+
+describe(@"UPPLastChangeParser", ^{
+
+    it(@"should parse RCS last change xml", ^{
+        NSData *data = LoadDataFromXML(@"LastChangeRCSFull", [self class]);
+        expect(data).toNot.beNil();
+
+        waitUntil(^(DoneCallback done) {
+            [UPPLastChangeParser parseData:data completion:^(NSDictionary *event, NSError *error) {
+                expect(error).to.beNil();
+                expect(event).toNot.beNil();
+                expect(event[@"Volume"]).to.equal(@"100");
+                expect(event[@"VolumeDB"]).to.equal(@"0");
+                expect(event[@"Mute"]).to.equal(@"0");
                 done();
             }];
         });

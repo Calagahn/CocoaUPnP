@@ -140,7 +140,41 @@ describe(@"UPPEventServer", ^{
                          @"SID": sid,
                          @"SEQ": @"15" };
 
-            NSData *body = LoadDataFromXML(@"LastChangeFull", [self class]);
+            NSData *body = LoadDataFromXML(@"LastChangeAVTFull", [self class]);
+            expect(body).toNot.beNil();
+
+            id mockRequest = OCMClassMock([GCDWebServerDataRequest class]);
+            OCMStub([mockRequest headers]).andReturn(headers);
+            OCMStub([mockRequest data]).andReturn(body);
+
+            id mockDelegate = OCMProtocolMock(@protocol(UPPEventServerDelegate));
+            OCMExpect([mockDelegate eventReceived:[OCMArg checkWithBlock:^BOOL(NSDictionary *event) {
+                expect(event).toNot.beNil();
+                expect(event[UPPEventServerSIDKey]).to.equal(sid);
+                expect(event[UPPEventServerBodyKey]).toNot.beNil();
+                return YES;
+            }]]);
+            sut.eventDelegate = mockDelegate;
+            expect(sut.eventDelegate).toNot.beNil();
+
+            processBlock(mockRequest);
+
+            OCMVerifyAll(mockDelegate);
+        });
+
+        it(@"should parse data and return to delegate upon recieving NOTIFY", ^{
+            NSString *sid = @"uuid:13d860b0-5ed1-1cef-b959-88ea708ed26b";
+
+            NSDictionary *headers;
+            headers = @{ @"HOST": @"10.54.6.197:49170",
+                         @"CONTENT-TYPE": @"text/xml; charset=\"utf-8\"",
+                         @"CONTENT-LENGTH": @"453",
+                         @"NT": @"upnp:event",
+                         @"NTS": @"upnp:propchange",
+                         @"SID": sid,
+                         @"SEQ": @"15" };
+
+            NSData *body = LoadDataFromXML(@"LastChangeRCSFull", [self class]);
             expect(body).toNot.beNil();
 
             id mockRequest = OCMClassMock([GCDWebServerDataRequest class]);
