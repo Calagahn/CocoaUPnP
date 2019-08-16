@@ -30,7 +30,13 @@
 
     ONOXMLDocument *lastChange = [ONOXMLDocument XMLDocumentWithString:[element stringValue] encoding:NSUTF8StringEncoding error:nil];
 
-    NSString *namespace = @"urn:schemas-upnp-org:metadata-1-0/AVT/";
+    NSString *avtNamespace = @"urn:schemas-upnp-org:metadata-1-0/AVT/";
+    NSString *rcsNamespace = @"urn:schemas-upnp-org:metadata-1-0/RCS/";
+    NSString *namespace = avtNamespace;
+    if ([[element stringValue] rangeOfString:rcsNamespace].location != NSNotFound) {
+        namespace = rcsNamespace;
+    }
+
     [lastChange definePrefix:@"a" forDefaultNamespace:namespace];
 
     [lastChange enumerateElementsWithXPath:@"//a:Event/a:InstanceID/*" usingBlock:^(ONOXMLElement *element, NSUInteger idx, BOOL *stop) {
