@@ -113,6 +113,8 @@
     if (url) { device.manufacturerURL = [NSURL URLWithString:url]; }
     url = [[element firstChildWithTag:@"modelURL"] stringValueOrNil];
     if (url) { device.modelURL = [NSURL URLWithString:url]; }
+    url = [[element firstChildWithTag:@"presentationURL"] stringValueOrNil];
+    if (url) { device.presentationURL = [NSURL URLWithString:url]; }
 }
 
 - (void)parseIcons:(ONOXMLElement *)iconList intoDevice:(UPPBasicDevice *)device

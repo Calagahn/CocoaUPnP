@@ -72,6 +72,11 @@
 @property (copy, nonatomic, nonnull) NSString *udn;
 
 /**
+   Presentation URL
+   */
+  @property (copy, nonatomic, nullable) NSURL *presentationURL;
+
+/**
  An array of icon objects as presented by the device.
  @see UPPDeviceIcon
  */

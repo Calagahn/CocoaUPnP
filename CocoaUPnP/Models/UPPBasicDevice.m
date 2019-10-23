@@ -65,6 +65,7 @@
         self.udn = [decoder decodeObjectForKey:@"udn"];
         self.iconList = [decoder decodeObjectForKey:@"iconList"];
         self.services = [decoder decodeObjectForKey:@"services"];
+        self.presentationURL = [decoder decodeObjectForKey:@"presentationURL"];
     }
 
     return self;
@@ -86,6 +87,7 @@
     [encoder encodeObject:self.udn forKey:@"udn"];
     [encoder encodeObject:self.iconList forKey:@"iconList"];
     [encoder encodeObject:self.services forKey:@"services"];
+    [encoder encodeObject:self.presentationURL forKey:@"presentationURL"];
 }
 
 @end
