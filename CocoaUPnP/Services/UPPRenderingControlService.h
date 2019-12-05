@@ -66,6 +66,40 @@ NS_ASSUME_NONNULL_BEGIN
  */
 - (void)setVolume:(NSNumber *)volume withInstanceID:(NSString *)instanceId channel:(nullable NSString *)channel success:(nullable UPPSuccessBlock)success;
 
+
+///-----------------------------------------------------------------------------
+/// @name VolumeDB
+///-----------------------------------------------------------------------------
+
+/**
+Get volumeDB for a specific channel
+
+@param instanceId The instance identifier
+@param channel    The channel to retrieve volume status for. Defaults to `Master`.
+@param completion A completion block which returns the parsed response, or an
+*/
+- (void)volumeDBWithInstanceID:(NSString *)instanceId channel:(nullable NSString *)channel completion:(nullable UPPResponseBlock)completion;
+
+/**
+ Set volumeDB for a specific channel
+
+ @param volume     The volume value to send in units of 1/256 dB
+ @param instanceId The instance identifier
+ @param channel    The channel to retrieve volume status for. Defaults to `Master`.
+ @param success    An optional block which returns the success state of the call,
+      along with an error object if the call was unsuccessful.
+ */
+- (void)setVolumeDB:(NSNumber *)volume withInstanceID:(NSString *)instanceId channel:(nullable NSString *)channel success:(nullable UPPSuccessBlock)success;
+
+/**
+Get the valid range for the volumeDB of a specific channel
+
+@param instanceId The instance identifier
+@param channel    The channel to retrieve volumeDB range values. Defaults to `Master`.
+@param completion A completion block which returns the parsed response, or an
+*/
+- (void)volumeDBRangeWithInstanceID:(NSString *)instanceId channel:(nullable NSString *)channel completion:(nullable UPPResponseBlock)completion;
+
 NS_ASSUME_NONNULL_END
 
 @end
