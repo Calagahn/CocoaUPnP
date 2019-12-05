@@ -59,4 +59,46 @@
                                  success:success];
 }
 
+
+- (void)volumeDBWithInstanceID:(NSString *)instanceId channel:(NSString *)channel completion:(UPPResponseBlock)completion
+{
+    if (!instanceId || !completion) { return; }
+
+    NSArray *keys = @[ @"InstanceID", @"Channel" ];
+    NSArray *values = @[ instanceId ?: @"0",
+                         channel ?: @"Master" ];
+    UPPParameters *params = [UPPParameters paramsWithKeys:keys values:values];
+
+    [self _sendPostRequestWithParameters:params
+                                  action:@"GetVolumeDB"
+                              completion:completion];
+}
+
+- (void)setVolumeDB:(NSNumber *)volume withInstanceID:(NSString *)instanceId channel:(nullable NSString *)channel success:(nullable UPPSuccessBlock)success
+{
+    if (!volume || !instanceId) { return; }
+
+    NSArray *keys = @[ @"InstanceID", @"Channel", @"DesiredVolume" ];
+    NSArray *values = @[ instanceId, channel ?: @"Master", volume ];
+    UPPParameters *params = [UPPParameters paramsWithKeys:keys values:values];
+
+    [self _sendPostRequestWithParameters:params
+                                  action:@"SetVolumeDB"
+                                 success:success];
+}
+
+- (void)volumeDBRangeWithInstanceID:(NSString *)instanceId channel:(NSString *)channel completion:(UPPResponseBlock)completion
+{
+    if (!instanceId || !completion) { return; }
+
+    NSArray *keys = @[ @"InstanceID", @"Channel" ];
+    NSArray *values = @[ instanceId ?: @"0",
+                         channel ?: @"Master" ];
+    UPPParameters *params = [UPPParameters paramsWithKeys:keys values:values];
+
+    [self _sendPostRequestWithParameters:params
+                                  action:@"GetVolumeDBRange"
+                              completion:completion];
+}
+
 @end
